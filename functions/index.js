@@ -36,8 +36,10 @@ const downloadImageFromOriginalBucket = async (originalImagePath) => {
 
 
 
-const resize = async (transformedImage, info, resolution, imageExt, imageNameWithoutExt, resolutionName, imagePathArray) => {
+const resize = async (transformedImage, info, resolution, imageName, resolutionName, imagePathArray) => {
     try {
+        const [imageNameWithoutExt, imageExt] = imageName.split('.');
+
         let imageHeight = null;
         let imageWidth = null;
 
@@ -70,7 +72,7 @@ const resize = async (transformedImage, info, resolution, imageExt, imageNameWit
         
         // upload to aws
         const destImagePathArray = [...imagePathArray];
-        let destinationFilePath = `${imageNameWithoutExt}-${resolutionName}.${imageExt}`;
+        let destinationFilePath = `${imageNameWithoutExt}-${resolutionName.toLowerCase()}.${imageExt}`;
         
         if(destImagePathArray.length >= 1){
             // if folder name exists
@@ -106,23 +108,21 @@ const resize = async (transformedImage, info, resolution, imageExt, imageNameWit
     // An example of image path is /image/test.png
     var imagePathArray = path.split('/');
     // get the requested image operations
-    const imageName = imagePathArray.length >1 ? imagePathArray.pop(): path;
+    const imageName = imagePathArray.pop();
      // remove -md,-sm from image name
     //  imagePathArray.push(imageName.replace(/-\w+(?=\.\w+$)/, ''));
 
-    const [imageNameWithoutExt, imageType] = imageName.split('.');
-
      // get full path
-     const originalImagePath = imagePathArray.length> 1 ? imagePathArray.join('/'):path;
+    //  const originalImagePath = imagePathArray.length> 1 ? imagePathArray.join('/'):path;
     
-    const { originalImageBody} = await downloadImageFromOriginalBucket(originalImagePath);
+    const { originalImageBody} = await downloadImageFromOriginalBucket(path);
 
     let transformedImage = Sharp(originalImageBody, { failOn: 'none', animated: true });
 
     const imageMetadata = await transformedImage.metadata();
 
     for(const [resolutionName, resolution] of Object.entries(constant.imageResolutions)) {
-        const {}  =  resize(transformedImage, imageMetadata, resolution, imageType, imageNameWithoutExt, resolutionName, imagePathArray);
+        const {}  =  resize(transformedImage, imageMetadata, resolution, imageName, resolutionName, imagePathArray);
     }
 
 }
@@ -133,8 +133,7 @@ module.exports= handler;
     requestContext: {
         http: {
             method: 'GET',
-            // path: 'media/019c8788-61ce-4dfe-a5c4-d582c4272c8b.png',
-            path: 'test.png',
+            path: 'image-1696516150113.jpeg',
         }
     }
 }))();
