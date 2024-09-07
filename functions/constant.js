@@ -1,15 +1,15 @@
 module.exports = {
     imageResolutions:{
-        SM: {
+        sm: {
             size: 100,
         },
-        MD: {
+        md: {
             size: 250,
         },
-        LG: {
+        lg: {
             size: 700,
         },
-        XL: {
+        xl: {
             size: 1200,
         }
     }
