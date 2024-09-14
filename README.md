@@ -1,4 +1,4 @@
-# On Fly Image Resizing using CloudFront and Lambda@Edge in NodeJS
+# On Fly Image Processing using CloudFront and Lambda@Edge in NodeJS
 
 Here lets discuss architecture which generate different variants of image like (small, medium, large etc) whenever browser (front-end) asks.
 
